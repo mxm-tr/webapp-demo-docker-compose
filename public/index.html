@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f3eb">
+    <meta name="description" content="Golden, crunchy, made fresh. Order your Tasty Crousty favourites for pickup.">
+    <title>Tasty Crousty | Made for the crunch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="Tasty Crousty home">
+        <span class="wordmark-mark" aria-hidden="true">tc</span>
+        <span>TASTY<br>CROUSTY</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        <a href="#menu">The menu</a>
+        <a href="#story">Our thing</a>
+      </nav>
+      <a class="header-order" href="#menu">Order for pickup <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="status-dot"></span> FRIED FRESH. EVERY TIME.</p>
+          <h1 id="hero-title">Good food.<br><em>Great crunch.</em></h1>
+          <p class="hero-description">Big flavour, golden crunch, zero shortcuts. Meet your new favourite kind of comfort food.</p>
+          <a class="button button-dark" href="#menu">Find your crunch <span aria-hidden="true">↓</span></a>
+          <div class="hero-note"><span class="note-spark" aria-hidden="true">✳</span><span>Made fresh when you order.<br><strong>Ready in about 15 minutes.</strong></span></div>
+        </div>
+        <div class="hero-visual">
+          <img src="https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=1400&q=90" alt="Golden crispy chicken sandwich with fresh greens" fetchpriority="high">
+          <div class="hero-sticker"><span>THE GOOD<br>STUFF</span><span class="sticker-star" aria-hidden="true">✳</span></div>
+          <div class="hero-caption"><span>01 / THE CROUSTY WAY</span><span>CRUNCH IS KIND OF OUR THING</span></div>
+        </div>
+        <div class="hero-side-label" aria-hidden="true">CRISPY BY NATURE · SERIOUS ABOUT FLAVOUR</div>
+      </section>
+
+      <section class="menu-section" id="menu" aria-labelledby="menu-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">THE LINEUP</p>
+            <h2 id="menu-title">Pick your <em>pleasure.</em></h2>
+          </div>
+          <p class="section-aside">All killer, no filler.<br>Made fresh to order.</p>
+        </div>
+        <div class="order-layout">
+          <div class="menu-area">
+            <div class="category-tabs" id="category-tabs" role="tablist" aria-label="Menu categories"></div>
+            <div class="menu-grid" id="menu-grid" aria-live="polite">
+              <p class="loading-state">Getting the good stuff ready...</p>
+            </div>
+          </div>
+          <aside class="cart-panel" aria-labelledby="cart-title">
+            <div class="cart-heading">
+              <div><p class="eyebrow">YOUR ORDER</p><h3 id="cart-title">The good stuff</h3></div>
+              <span class="cart-count" id="cart-count" aria-label="0 items">0</span>
+            </div>
+            <div class="cart-items" id="cart-items"><p class="empty-cart">Your next great meal starts here.</p></div>
+            <form id="checkout-form" class="checkout-form">
+              <label for="customer-name">Name for pickup</label>
+              <input id="customer-name" name="customerName" autocomplete="name" placeholder="What should we call you?" minlength="2" maxlength="80" required>
+              <label for="order-note">Anything we should know? <span>OPTIONAL</span></label>
+              <textarea id="order-note" name="note" rows="2" maxlength="300" placeholder="Sauce on the side, please..."></textarea>
+              <div class="cart-total"><span>Subtotal</span><strong id="cart-total">$0.00</strong></div>
+              <button class="button button-red checkout-button" id="checkout-button" type="submit" disabled>Place pickup order <span aria-hidden="true">↗</span></button>
+              <p class="checkout-message" id="checkout-message" role="status" aria-live="polite"></p>
+              <p class="pickup-note">Pickup only · Pay at the counter</p>
+            </form>
+          </aside>
+        </div>
+      </section>
+
+      <section class="story-strip" id="story">
+        <span class="story-star" aria-hidden="true">✳</span>
+        <p>GOOD FOOD IS A<br><em>CRUNCHY</em> BUSINESS.</p>
+        <span class="story-tag">NO SHORTCUTS. JUST GOOD BITES.</span>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="wordmark footer-mark" href="#top"><span class="wordmark-mark" aria-hidden="true">tc</span><span>TASTY<br>CROUSTY</span></a>
+      <p>Made fresh. Made with care. Made for you.</p>
+      <a href="#menu">Back to the good stuff ↑</a>
+    </footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

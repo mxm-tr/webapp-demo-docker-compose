@@ -1,0 +1,46 @@
+services:
+  app:
+    image: mxmtr86/docker-course:${APP_IMAGE_TAG:-1.0.0}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      DATABASE_URL: "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:-tasty_crousty}"
+    networks:
+      - maxime-dev-1-network
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mxmtr86/docker-course:${DB_IMAGE_TAG:-postgres-16}
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tasty_crousty}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    networks:
+      - maxime-dev-1-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-tasty_crousty}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres_data:
+
+networks:
+  maxime-dev-1-network:
+    driver: bridge

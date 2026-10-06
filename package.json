@@ -1,0 +1,18 @@
+{
+  "name": "tasty-crousty",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A crispy chicken ordering app with a PostgreSQL backend.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/server.js",
+    "dev": "node --watch --env-file-if-exists=.env.dev src/server.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "express": "4.22.3",
+    "pg": "8.13.1"
+  }
+}
