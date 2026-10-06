@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ .Title }} | {{ .Site.Title }}</title>
+  </head>
+  <body>
+    <main>
+      <p><a href="{{ .Site.Home.RelPermalink }}">Home</a></p>
+      <h1>{{ .Title | default .Section }}</h1>
+      {{ .Content }}
+      <ul>
+        {{ range .Pages.ByDate.Reverse }}
+          <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+        {{ else }}
+          <li>No pages here yet.</li>
+        {{ end }}
+      </ul>
+    </main>
+  </body>
+</html>
