@@ -1,4 +1,13 @@
 services:
+  nginx-proxy:
+    container_name: nginx-reverse-proxy
+    image: nginxproxy/nginx-proxy
+    networks:
+      - app-network
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
   app:
     image: mxmtr86/docker-course:${APP_IMAGE_TAG:-1.0.0}
     build:
@@ -7,12 +16,13 @@ services:
     pull_policy: always
     restart: unless-stopped
     environment:
-      PORT: 3000
+      PORT: "3000"
       DATABASE_URL: "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:-tasty_crousty}"
+      VIRTUAL_HOST: whoami.local
+      VIRTUAL_PORT: "3000"
     networks:
-      - maxime-dev-1-network
-    ports:
-      - "${APP_PORT:-3000}:3000"
+      - app-network
+      - db-network
     depends_on:
       db:
         condition: service_healthy
@@ -29,7 +39,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     networks:
-      - maxime-dev-1-network
+      - app-network
+      - db-network
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -42,5 +53,7 @@ volumes:
   postgres_data:
 
 networks:
-  maxime-dev-1-network:
+  app-network:
+    driver: bridge
+  db-network:
     driver: bridge
