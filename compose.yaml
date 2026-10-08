@@ -2,12 +2,33 @@ services:
   nginx-proxy:
     container_name: nginx-reverse-proxy
     image: nginxproxy/nginx-proxy
+    restart: always
     networks:
       - app-network
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - vhosts:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - certs:/etc/nginx/certs
+
+  nginx-proxy-acme:
+    container_name: nginx-proxy-acme
+    image: nginxproxy/acme-companion:latest
+    restart: unless-stopped
+    environment:
+      NGINX_PROXY_CONTAINER: nginx-reverse-proxy
+      NGINX_DOCKER_GEN_CONTAINER: nginx-reverse-proxy
+      CERTS_UPDATE_INTERVAL: "28800" # Check every 8h
+      ACME_CA_URI: https://acme-staging-v02.api.letsencrypt.org/directory # For testing
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme:/etc/acme.sh
+    volumes_from:
+      - nginx-proxy
+
   app:
     image: mxmtr86/docker-course:${APP_IMAGE_TAG:-1.0.0}
     build:
@@ -18,8 +39,10 @@ services:
     environment:
       PORT: "3000"
       DATABASE_URL: "postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/${POSTGRES_DB:-tasty_crousty}"
-      VIRTUAL_HOST: whoami.local
+      VIRTUAL_HOST: tastycrousty67.duckdns.org
       VIRTUAL_PORT: "3000"
+      ACME_HOST: tastycrousty67.duckdns.org
+      ACME_EMAIL: maxime.hubert@ynov.com
     networks:
       - app-network
       - db-network
@@ -44,12 +67,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-tasty_crousty}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-tasty_crousty}",
+        ]
       interval: 5s
       timeout: 3s
       retries: 10
 
 volumes:
+  acme:
+  certs:
+  html:
+  vhosts:
   postgres_data:
 
 networks:
