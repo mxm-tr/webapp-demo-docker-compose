@@ -1,0 +1,74 @@
+# Install required packages
+- hosts: all
+  roles:
+    - dependencies
+    - geerlingguy.docker
+  tags:
+    - dependencies
+
+# Install the sample app
+- hosts: all
+  name: Deploy reverse-proxy services with docker compose
+  tags:
+    - app
+  tasks:
+    - name: Deploy sample app
+      community.docker.docker_compose_v2:
+        project_name: sample-app
+        definition:
+          version: "3"
+          services:
+            # Reverse proxy
+            nginx-proxy:
+              container_name: nginx-reverse-proxy
+              image: nginxproxy/nginx-proxy
+              restart: unless-stopped
+              ports:
+                - "80:80"
+                - "443:443"
+              volumes:
+                - /var/run/docker.sock:/tmp/docker.sock:ro
+                - certs:/etc/nginx/certs
+                - vhosts:/etc/nginx/vhost.d
+                - html:/usr/share/nginx/html
+              networks:
+                - internal
+                - external
+
+            nginx-proxy-acme:
+              container_name: nginx-proxy-acme
+              image: nginxproxy/acme-companion
+              restart: unless-stopped
+              environment:
+                NGINX_PROXY_CONTAINER: nginx-reverse-proxy
+                ACME_CA_URI: https://acme-staging-v02.api.letsencrypt.org/directory # comment this out to disable testing server
+              volumes:
+                - certs:/etc/nginx/certs
+                - vhosts:/etc/nginx/vhost.d
+                - acme:/etc/acme.sh
+                - html:/usr/share/nginx/html
+                - /var/run/docker.sock:/var/run/docker.sock:ro
+              networks:
+                - internal
+
+            # Web app
+            whoami:
+              image: nginx
+              restart: unless-stopped
+              environment:
+                LETSENCRYPT_RESTART_CONTAINER: "true"
+                LETSENCRYPT_HOST: "{{ domain_name }}"
+                VIRTUAL_HOST: "{{ domain_name }}"
+                VIRTUAL_PATH: /
+              networks:
+                - internal
+
+          networks:
+            external:
+            internal:
+          
+          volumes:
+            acme: {}
+            certs: {}
+            vhosts: {}
+            html: {}

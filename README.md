@@ -40,6 +40,11 @@ Start the app at [http://localhost:3001](http://localhost:3001):
 docker compose --env-file .env.dev -f compose-dev.yaml up --build
 ```
 
+## Deploy using ansible
+
+* Edit the `ansible/inventory.yml`
+* Deploy using `ansible-playbook -i ansible/inventory.yml ansible/main.yml`
+
 ## API
 
 - `GET /api/health` checks the database connection.
