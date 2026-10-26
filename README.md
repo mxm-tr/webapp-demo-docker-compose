@@ -42,8 +42,17 @@ docker compose --env-file .env.dev -f compose-dev.yaml up --build
 
 ## Deploy using ansible
 
-* Edit the `ansible/inventory.yml`
-* Deploy using `ansible-playbook -i ansible/inventory.yml ansible/main.yml`
+* Create your local environment file and change the sample password before using the production stack:
+
+```sh
+cp .env.example .env
+```
+
+* Edit the `ansible/inventory.yml` with your own domain
+* Deploy using
+```bash
+ansible-playbook -i ansible/inventory.yml ansible/main.yml -e "docker_username=mxmtr86"  -e "docker_token=dckr_pat_xxx" # (use `-t app` to only deploy the app)
+```
 
 ## API
 
